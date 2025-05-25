@@ -12,5 +12,5 @@ jobs:
     uses: kubeosx/kubeos-github-workflows/.github/workflows/go-ci.yaml@main
     with:
       # need to specify working-directory as that's where the source code lives
-      working-directory: ./src
+      working-directory: .
     secrets: inherit
