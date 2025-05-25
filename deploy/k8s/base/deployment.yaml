@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goapp9
+  namespace: default
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goapp9
+  template:
+    metadata:
+      annotations:
+        backstage.io/kubernetes-id: goapp9
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/role: 'goapp9'
+        vault.hashicorp.com/agent-inject-secret-config.txt: 'kubeos/dev/goapp9'
+    spec:
+      serviceAccountName: goapp9
+      automountServiceAccountToken: true
+      volumes:
+        # - name: rw-tmp-volume
+        #   persistentVolumeClaim:
+        #     claimName: imagestoreclaim
+        - name: tmp-rw-volume
+          emptyDir: {}
+      containers:
+        - name: goapp9
+          image: rohitrustagi007/:1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: EXAMPLE_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: kubeosx-secret
+                  key: example-key
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 200m
+              memory: 500Mi
+          securityContext:
+            runAsUser: 1000 # Replace with your desired user ID
+            runAsGroup: 1000 # Replace with your desired group ID
+            capabilities:
+              drop:
+                - all
+            readOnlyRootFilesystem: true

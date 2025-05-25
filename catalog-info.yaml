@@ -1,0 +1,28 @@
+
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: goapp9
+  description: An example of a go CI CD enabled K8 template.
+  annotations:
+    github.com/project-slug: undefined/undefined
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/kubernetes-id: "goapp9"
+    backstage.io/kubernetes-namespace: "goapp9"
+    prometheus.io/alert: all
+  tags:
+    - go
+    - template
+  links:
+    - url: https://github.com/kubeosx/kubeos-go-template
+      icon: web
+      title: Github
+    - url: https://github.com/kubeosx/kubeos-go-template/issues
+      icon: web
+      title: Github Issues
+spec:
+  type: service
+  owner: platform-engineering-team
+  lifecycle: experimental
+  dependsOn: ['component:kubeos', component:kubeos-cluster, component:kubeos-baseline]
+  system: kubeos-idp
